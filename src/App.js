@@ -1,23 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useState, useRef } from "react";
 
 function App() {
+  const [seconds, setSeconds] = useState(0);
+  const [isActive, setIsActive] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const intervalRef = useRef(null);
+
+  const startTimer = () => {
+    setIsActive(true);
+    setIsPaused(false);
+    intervalRef.current = setInterval(() => {
+      setSeconds((seconds) => {
+        return seconds + 1;
+      });
+    }, 1000);
+  };
+
+  const resetTimer = () => {
+    clearInterval(intervalRef.current);
+    setSeconds(0);
+  };
+
+  const formatTime = () => {
+    const getSeconds = seconds % 60;
+    const getMinute = Math.floor(seconds / 60);
+    return `0${getMinute}:0${getSeconds}`;
+  };
+
+  // const { smallMillis, seconds } = formatTime();
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {formatTime()}
+      <button onClick={startTimer}>Start</button>
+      <button onClick={resetTimer}>Reset</button>
     </div>
   );
 }
